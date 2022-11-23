@@ -9,7 +9,7 @@ First of all clone this project to your local machine
 Then go to project directory and Install the dependencies.
 
 ```sh
-cd dillinger
+cd sieves-electron
 npm i
 ```
 
