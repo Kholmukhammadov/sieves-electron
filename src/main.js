@@ -50,6 +50,7 @@ function createWindow () {
     handlePrint(ipcMain, mainWindow.webContents.getPrinters().find(printer => printer.isDefault).name);
     mainWindow.on('closed', function () {
         mainWindow = null
+        app.quit();
     })
 }
 
