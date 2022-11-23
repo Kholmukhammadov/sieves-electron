@@ -1,6 +1,10 @@
 const electron = require('electron');
 const {app, BrowserWindow, ipcMain, webContents, PrintSettings} = require('electron');
 if (require('electron-squirrel-startup')) app.quit();
+require('update-electron-app')({
+    repo: 'Kholmukhammadov/sieves-electron',
+    updateInterval: '12 hour',
+})
 const setupCustomerDisplay = require('./customer-display');
 const handlePrint = require('./electron-print');
 const config = require('../constant');
