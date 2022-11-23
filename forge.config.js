@@ -1,12 +1,14 @@
 module.exports = {
-  packagerConfig: {},
+  packagerConfig: {
+    icon: "./src/assets/electron-icon/icons/win/icon.ico"
+  },
   rebuildConfig: {},
 makers: [
   {
     name: '@electron-forge/maker-squirrel',
     config: {
-      // setupIcon: '/path/to/icon.ico'
-  }
+      setupIcon: "./src/assets/electron-icon/icons/win/icon.ico"
+    }
   },
   {
     name: '@electron-forge/maker-zip',
@@ -26,11 +28,12 @@ publishers: [
     name: '@electron-forge/publisher-github',
     config: {
       repository: {
-        owner: 'kholmukhammadov',
+        owner: 'Kholmukhammadov',
         name: 'sieves-electron'
       },
-      authToken: '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',
-      prerelease: true
+      authToken: process.env.GIT_AUTH?.trim(),
+      prerelease: true,
+      tagPrefix: 'v',
     }
   }
 ]

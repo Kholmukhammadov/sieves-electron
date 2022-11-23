@@ -31,7 +31,7 @@ function createWindow () {
         width: 2000,
         height: 3000,
         autoHideMenuBar: true,
-        // icon: '/path/to/icon.png',
+        icon: './assets/icon/logo.png',
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
