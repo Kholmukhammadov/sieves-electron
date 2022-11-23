@@ -1,5 +1,5 @@
 let electron, {BrowserWindow, ipcMain} = require("electron");
-
+const config = require('../constant');
 const {IpcMain} = require('electron');
 
 /**
@@ -30,7 +30,7 @@ function setupCustomerDisplay(ipcMain, displays) {
             fullscreen: true, // TODO switch to true for prod
             titleBarStyle: 'hidden' // TODO switch to 'hidden' for prod,
         });
-        customerDisplay.loadURL(new URL(`http://localhost:4200/#/customer-display`).href)
+        customerDisplay.loadURL(new URL(`${config.url}/#/customer-display`).href)
         customerDisplay.on('close', () => {
             customerDisplay = null;
             ipcMain.emit('customer-display-closed')
