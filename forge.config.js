@@ -5,7 +5,7 @@ makers: [
   {
     name: '@electron-forge/maker-squirrel',
     config: {
-      setupIcon: '/path/to/icon.ico'
+      // setupIcon: '/path/to/icon.ico'
   }
   },
   {
@@ -29,6 +29,7 @@ publishers: [
         owner: 'kholmukhammadov',
         name: 'sieves-electron'
       },
+      authToken: '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',
       prerelease: true
     }
   }
