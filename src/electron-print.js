@@ -401,7 +401,7 @@ function handlePrint(ipcMain, defaultPrinter) {
                                 width: 20%;
                                 display: flex;
                                 justify-content: space-between;
-                                font-weight: 500;
+                                font-weight: 700;
                             ">${ item.quantity } шт</span>
                             <span style="
                                 width: 80%;
@@ -611,7 +611,7 @@ function handlePrint(ipcMain, defaultPrinter) {
                                 width: 20%;
                                 display: flex;
                                 justify-content: space-between;
-                                font-weight: 500;
+                                font-weight: 700;
                             ">${ item.quantity } шт</span>
                             <span style="
                                 width: 80%;
@@ -708,7 +708,7 @@ function handlePrint(ipcMain, defaultPrinter) {
                                 width: 20%;
                                 display: flex;
                                 justify-content: space-between;
-                                font-weight: 500;
+                                font-weight: 700;
                             ">${ item.quantity } шт</span>
                             <span style="
                                 width: 80%;
@@ -786,7 +786,7 @@ function handlePrint(ipcMain, defaultPrinter) {
                                 width: 20%;
                                 display: flex;
                                 justify-content: space-between;
-                                font-weight: 500;
+                                font-weight: 700;
                             ">${ item.quantity } шт</span>
                             <span style="
                                 width: 80%;
@@ -940,7 +940,7 @@ function handlePrint(ipcMain, defaultPrinter) {
                             <span style="
                                 width: 25%;
                                 min-width: 50px;
-                                font-weight: 500;
+                                font-weight: 700;
                             ">${ item.quantity } шт </span>
                             <span style="
                                 font-weight: 700;
@@ -954,7 +954,7 @@ function handlePrint(ipcMain, defaultPrinter) {
                         ">
                             <span style="
                                 display: flex;
-                                font-weight: 500;
+                                font-weight: 700;
                             ">${ item.quantity * item.actual_price }</span>
                         </div>
                     </div>`;
