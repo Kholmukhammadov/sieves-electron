@@ -1,6 +1,5 @@
 const electron = require('electron');
 const {app, BrowserWindow, ipcMain, webContents, PrintSettings} = require('electron');
-if (require('electron-squirrel-startup')) app.quit();
 require('update-electron-app')({
     repo: 'Kholmukhammadov/sieves-electron',
     updateInterval: '12 hour',
@@ -54,7 +53,7 @@ function createWindow () {
     })
 }
 
-
+if (require('electron-squirrel-startup')) app.quit();
 app.on('ready', () => {
     // Create main window
     createWindow();

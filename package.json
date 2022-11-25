@@ -1,14 +1,14 @@
 {
   "name": "sieves-electron",
-  "version": "1.0.02",
+  "version": "1.0.03",
   "description": "electron version sievesapp",
   "main": "src/main.js",
   "scripts": {
-    "start": "set NODE_ENV=development && electron src/main.js",
+    "start": "set NODE_ENV=development && electron-forge start",
     "test": "echo \"Error: no test specified\" && exit 1",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "publish": "set GIT_AUTH=YourGitAuthToke && electron-forge publish -- --from-dry-run"
+    "publish": "set GIT_AUTH=YourAuthToken && electron-forge publish -- --from-dry-run"
   },  
   "author": "Muzaffar Kholmukhammadov, Azamat Afzalov",
   "license": "ISC",

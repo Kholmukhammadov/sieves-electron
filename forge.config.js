@@ -7,7 +7,11 @@ makers: [
   {
     name: '@electron-forge/maker-squirrel',
     config: {
-      setupIcon: "./src/assets/electron-icon/icons/win/icon.ico"
+      setupIcon: "./src/assets/electron-icon/icons/win/icon.ico",
+      authors: 'Muzaffar and Azamat',
+      description: 'Sieves Electron app',
+      exe: "sieves-electron.exe",
+      setupExe: "sieves-electron.exe"
     }
   },
   {
