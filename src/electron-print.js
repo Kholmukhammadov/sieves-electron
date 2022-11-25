@@ -374,7 +374,7 @@ function handlePrint(ipcMain, defaultPrinter) {
               {
                   type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                   value: `Bремя заказа: ${order.start_time.split(' ')[1]}`,
-                  style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "17px", textAlign: "left", borderBottom: order.orderType.type !== 'complement' ? "1px solid black" : "none", paddingBottom: order.orderType.type !== 'complement' ? "5px" :'0px' }
+                  style: {marginRight: '5px',  fontFamily: 'courier', fontWeight: '700', fontSize: "17px", textAlign: "left", borderBottom: order.orderType.type !== 'complement' ? "1px solid black" : "none", paddingBottom: order.orderType.type !== 'complement' ? "5px" :'0px' }
               },
         ]
     }
@@ -570,7 +570,7 @@ function handlePrint(ipcMain, defaultPrinter) {
             {
                 type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                 value: `Bремя заказа: ${order.start_time.split(' ')[1]}`,
-                style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "17px", textAlign: "left" }
+                style: {marginRight: '5px',  fontFamily: 'courier', fontWeight: '700', fontSize: "17px", textAlign: "left" }
             },
             {
                 type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
@@ -907,7 +907,7 @@ function handlePrint(ipcMain, defaultPrinter) {
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `Bремя заказа: ${ order.start_time.split(' ')[1] }`,
-                style: {marginRight: '5px', fontFamily: 'courier', textAlign: 'left', fontSize: "15px", marginTop: '5px'}
+                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '700', textAlign: 'left', fontSize: "15px", marginTop: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
