@@ -9,14 +9,12 @@ const {IpcMain} = require('electron');
  **/
 function handlePrint(ipcMain, defaultPrinter) {
     ipcMain.handle('print-pos-general',  (event, ...args) => {
-        const {receipt, res, receiptNumber, date} = args[0].order;
+        const {receipt, res, receiptNumber, date, fiscalSign, terminalId} = args[0].order;
         let totalVat = 0;
-        let fiscalSign;
-        let terminalId;
         receipt.params.items.forEach(i => {
             totalVat += i.vat;
         });
-        const data =  generatePosGeneralBill(res, receipt, String(receiptNumber), date, totalVat,fiscalSign, terminalId);
+        const data =  generatePosGeneralBill(res, receipt, String(receiptNumber), date, totalVat, fiscalSign, terminalId);
         letsPrint(data, defaultPrinter);
     });
     
@@ -166,27 +164,27 @@ function handlePrint(ipcMain, defaultPrinter) {
           {
               type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
               value: `${receipt.companyName}`,
-              style: {marginRight: '5px', fontFamily: 'courier', textAlign: 'center', fontSize: "24px"}
+              style: {marginRight: '5px', fontFamily: 'PT Mono', textAlign: 'center', fontSize: "24px"}
           },
           {
               type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
               value: `${receipt.companyAddress}`,
-              style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "14px", textAlign: "center"}
+              style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "14px", textAlign: "center"}
           },
           {
               type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
               value: `<span>ИНН №:</span> <span>${receipt.companyINN}</span>`,
-              style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between', borderTop: '1px dotted black', marginTop: '2px'}
+              style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between', borderTop: '1px dotted black', marginTop: '2px'}
           },
           {
               type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
               value: `<span>Чек №:</span> <span>${res? res.receiptSeq : receiptNumber.slice(0, 6)}</span>`,
-              style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
+              style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
           },
           {
               type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
               value: `<span>Сана:</span> <span>${date}</span>`,
-              style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed black'}
+              style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed black'}
           },
     ]
 }
@@ -199,22 +197,22 @@ function handlePrint(ipcMain, defaultPrinter) {
             {
                 type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                 value: `${item.name}`,
-                style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "14px", fontWeight:'700', textAlign: "left", display: 'flex', justifyContent: 'space-between', marginTop: '5px'}
+                style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "14px", fontWeight:'700', textAlign: "left", display: 'flex', justifyContent: 'space-between', marginTop: '5px'}
             },        
             {
                 type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                 value: `${pipes.TaxPricePipe(item.price/(item.amount/1000)) +' x ' + pipes.TaxAmountPipe(item.amount) + ' =' + pipes.TaxPricePipe(item.price)}`,
-                style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "14px", textAlign: "left", display: 'flex', justifyContent: 'space-between'}
+                style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "14px", textAlign: "left", display: 'flex', justifyContent: 'space-between'}
             },       
             {
                 type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                 value: `ҚҚС киймати ${item.vatPercent}% ${pipes.TaxPricePipe(item.vat)}`,
-                style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "14px", textAlign: "left", display: 'flex', justifyContent: 'space-between'}
+                style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "14px", textAlign: "left", display: 'flex', justifyContent: 'space-between'}
             },       
             {
                 type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                 value: `МХИК коди: ${item.classCode}`,
-                style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "14px", textAlign: "left", display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed black'}
+                style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "14px", textAlign: "left", display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed black'}
             },
         ];
         orderItems.push(...orderItem);
@@ -228,32 +226,32 @@ function handlePrint(ipcMain, defaultPrinter) {
         {
             type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
             value: `<span>ЖАМИ:</span> <span>${pipes.TaxPricePipe(receipt.params.receivedCash + receipt.params.receivedCard)}</span>`,
-            style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
+            style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
         },
         {
             type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
             value: `<span>Шу жумладан ҚҚС:</span> <span>${pipes.TaxPricePipe(totalVat)}</span>`,
-            style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
+            style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
         },
         {
             type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
             value: `<span>Тўлов:</span> <span>${pipes.TaxPricePipe(receipt.params.receivedCash + receipt.params.receivedCard)}</span>`,
-            style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
+            style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
         },
         {
             type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
             value: `<span>Нақд:</span> <span>${pipes.TaxPricePipe(receipt.params.receivedCash)}</span>`,
-            style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
+            style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
         },
         {
             type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
             value: `<span>Банк картаси:</span> <span>${pipes.TaxPricePipe(receipt.params.receivedCard)}</span>`,
-            style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
+            style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
         },
         {
             type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
             value: `<span>Кассир:</span> <span>${receipt.staffName}</span>`,
-            style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
+            style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
         },
     ];
 }
@@ -263,27 +261,27 @@ function handlePrint(ipcMain, defaultPrinter) {
         {
             type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
             value: `Фискал маълумот`,
-            style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "14px", textAlign: "center", borderBottom: "1px dashed black"}
+            style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "14px", textAlign: "center", borderBottom: "1px dashed black"}
         },
         {
             type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
             value: `<span>Виртуал касса:</span> <span>${429999}</span>`,
-            style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
+            style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
         },
         {
             type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
             value: `<span>ФМ рақами:</span> <span>${res ? res.terminalId : terminalId}</span>`,
-            style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
+            style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
         },
         {
             type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
             value: `<span>Чек рақами:</span> <span>${res ? res.receiptSeq: receipt_number.slice(0, 6)}</span>`,
-            style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
+            style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
         },
         {
             type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
             value: `<span>Фискал белги:</span> <span>${res? res.fiscalSign : fiscalSign}</span>`,
-            style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
+            style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "14px", textAlign: "center", display: 'flex', justifyContent: 'space-between'}
         },
     ];
 }
@@ -342,7 +340,7 @@ function handlePrint(ipcMain, defaultPrinter) {
                 {
                     type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                     value: `Кассир: ${ order.employee.registration_number}`,
-                    style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "17px", textAlign: "left", borderBottom: "1px solid black", paddingBottom: "5px"}
+                    style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "17px", textAlign: "left", borderBottom: "1px solid black", paddingBottom: "5px"}
                 },
             ]
             data.push(...cashierData);
@@ -357,24 +355,24 @@ function handlePrint(ipcMain, defaultPrinter) {
               {
                   type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                   value: `${order.orderType.name}`,
-                  style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '700', textAlign: 'center', fontSize: "24px"}
+                  style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '700', textAlign: 'center', fontSize: "24px"}
               },
               {
                   type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                   value: `${order.orderType.type === 'break' ?
                   (order.breakEmployee ? order.breakEmployee.registration_number : 'Пусто') :
                   'Complement'}`,
-                  style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "36px", textAlign: "center", marginTop: "15px"}
+                  style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "36px", textAlign: "center", marginTop: "15px"}
               },
               {
                   type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                   value: `Дата: ${order.start_time.split(' ')[0]}`,
-                  style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "17px", textAlign: "left",  marginTop: '15px'}
+                  style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "17px", textAlign: "left",  marginTop: '15px'}
               },
               {
                   type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                   value: `Bремя заказа: ${order.start_time.split(' ')[1]}`,
-                  style: {marginRight: '5px',  fontFamily: 'courier', fontWeight: '700', fontSize: "17px", textAlign: "left", borderBottom: order.orderType.type !== 'complement' ? "1px solid black" : "none", paddingBottom: order.orderType.type !== 'complement' ? "5px" :'0px' }
+                  style: {marginRight: '5px',  fontFamily: 'PT Mono', fontWeight: '700', fontSize: "17px", textAlign: "left", borderBottom: order.orderType.type !== 'complement' ? "1px solid black" : "none", paddingBottom: order.orderType.type !== 'complement' ? "5px" :'0px' }
               },
         ]
     }
@@ -466,14 +464,13 @@ function handlePrint(ipcMain, defaultPrinter) {
                     width: 80%;
                     display: flex;
                     flex-direction: column;
-                    margin: 10px 0;
                     padding: 10px 0;
                     ">
                     ${orderItems}
                     </div>
                     </div>
                     `,
-                    style: {marginRight: '5px', fontFamily: 'courier', fontSize: "17px"}
+                    style: {marginRight: '5px', fontFamily: 'PT Mono', fontSize: "17px"}
                 },
             ];
             result.push(...orderItemsGrouped);
@@ -486,12 +483,12 @@ function handlePrint(ipcMain, defaultPrinter) {
             {
                 type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                 value: `<span style="font-weigth: 600;">ИТОГО:</span> <span>${order.value}</span>`,
-                style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "17px", textAlign: "center", display: 'flex', justifyContent: 'space-between', borderBottom: "1px solid black",marginTop: "5px", paddingBottom: "15px",}
+                style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "17px", textAlign: "center", display: 'flex', justifyContent: 'space-between', borderBottom: "1px solid black",marginTop: "5px", paddingBottom: "15px",}
             },
             {
                 type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                 value: `Приятного аппетита!`,
-                style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "17px", textAlign: "center", marginTop: "5px"}
+                style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "17px", textAlign: "center", marginTop: "5px"}
             },
         ];
     }
@@ -526,7 +523,7 @@ function handlePrint(ipcMain, defaultPrinter) {
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `${order.orderType.name}`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: order.order_type_id >= 7 ? '800' : '600', textAlign: 'center', fontSize: "25px"}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: order.order_type_id >= 7 ? '800' : '600', textAlign: 'center', fontSize: "25px"}
             },
         ]);
         if (order.customer) {
@@ -534,7 +531,7 @@ function handlePrint(ipcMain, defaultPrinter) {
                 {
                     type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                     value: `${order.customer.contacts[0].phone}`,
-                    style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "36px", textAlign: "center", marginTop: "5px"}
+                    style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "36px", textAlign: "center", marginTop: "5px"}
                 },
             ]);
         }
@@ -542,7 +539,7 @@ function handlePrint(ipcMain, defaultPrinter) {
             {
                 type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                 value: `${order.pager_number}`,
-                style: {marginRight: '5px',  fontFamily: 'courier', fontSize: order.customer ? "17px" : "36px", textAlign: "center", marginTop: "5px"}
+                style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: order.customer ? "17px" : "36px", textAlign: "center", marginTop: "5px"}
             },
         ]);
 
@@ -551,7 +548,7 @@ function handlePrint(ipcMain, defaultPrinter) {
                 {
                     type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                     value: `${order.note.split(',')[1]}`,
-                    style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "17px", textAlign: "center", marginTop: "5px"}
+                    style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "17px", textAlign: "center", marginTop: "5px"}
                 },
             ]);
         }
@@ -560,22 +557,22 @@ function handlePrint(ipcMain, defaultPrinter) {
             {
                 type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                 value: `Счет № ${ order.receipt_number }`,
-                style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "17px", textAlign: "center", marginTop: "5px"}
+                style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "17px", textAlign: "center", marginTop: "5px"}
             },
             {
                 type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                 value: `Дата: ${order.start_time.split(' ')[0]}`,
-                style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "17px", textAlign: "left",  marginTop: '15px'}
+                style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "17px", textAlign: "left",  marginTop: '15px'}
             },
             {
                 type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                 value: `Bремя заказа: ${order.start_time.split(' ')[1]}`,
-                style: {marginRight: '5px',  fontFamily: 'courier', fontWeight: '700', fontSize: "17px", textAlign: "left" }
+                style: {marginRight: '5px',  fontFamily: 'PT Mono', fontWeight: '700', fontSize: "17px", textAlign: "left" }
             },
             {
                 type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                 value: `Кассир: ${ order.employee.registration_number}`,
-                style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "17px", textAlign: "left", borderBottom: "1px solid black", paddingBottom: "5px"}
+                style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "17px", textAlign: "left", borderBottom: "1px solid black", paddingBottom: "5px"}
             },
         ]);
         if (order.queue_type === '') {
@@ -583,7 +580,7 @@ function handlePrint(ipcMain, defaultPrinter) {
                 {
                     type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                     value: `Асинхронный...`,
-                    style: {marginRight: '5px',  fontFamily: 'courier', fontWeight: '700', fontSize: "24px", textAlign: "center", marginTop: "5px"}
+                    style: {marginRight: '5px',  fontFamily: 'PT Mono', fontWeight: '700', fontSize: "24px", textAlign: "center", marginTop: "5px"}
                 },]);
         }
         return data;
@@ -676,14 +673,13 @@ function handlePrint(ipcMain, defaultPrinter) {
                     width: 80%;
                     display: flex;
                     flex-direction: column;
-                    margin: 10px 0;
                     padding: 10px 0;
                     ">
                     ${orderItems}
                     </div>
                     </div>
                     `,
-                    style: {marginRight: '5px', fontFamily: 'courier', fontSize: "17px"}
+                    style: {marginRight: '5px', fontFamily: 'PT Mono', fontSize: "17px"}
                 },
             ];
             result.push(...orderItemsGrouped);
@@ -747,14 +743,13 @@ function handlePrint(ipcMain, defaultPrinter) {
                     width: 80%;
                     display: flex;
                     flex-direction: column;
-                    margin: 10px 0;
                     padding: 10px 0;
                     ">
                     ${orderItems}
                     </div>
                     </div>
                     `,
-                    style: {marginRight: '5px', fontFamily: 'courier', fontSize: "17px"}
+                    style: {marginRight: '5px', fontFamily: 'PT Mono', fontSize: "17px"}
                 },
             ];
             result.push(...orderItemsGrouped);
@@ -764,7 +759,7 @@ function handlePrint(ipcMain, defaultPrinter) {
                 {
                     type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                     value: `Бесплатные соусы в наборе`,
-                    style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "17px", textAlign: "left", borderBottom: "1px dashed black", paddingBottom: "5px"}
+                    style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "17px", textAlign: "left", borderBottom: "1px dashed black", paddingBottom: "5px"}
                 },]);
             
             let orderItems = '';
@@ -825,14 +820,13 @@ function handlePrint(ipcMain, defaultPrinter) {
                     width: 80%;
                     display: flex;
                     flex-direction: column;
-                    margin: 10px 0;
                     padding: 10px 0;
                     ">
                     ${orderItems}
                     </div>
                     </div>
                     `,
-                    style: {marginRight: '5px', fontFamily: 'courier', fontSize: "17px"}
+                    style: {marginRight: '5px', fontFamily: 'PT Mono', fontSize: "17px"}
                 },
             ];
             result.push(...orderItemsGrouped);
@@ -846,22 +840,22 @@ function handlePrint(ipcMain, defaultPrinter) {
             {
                 type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                 value: `<span>Итого:</span> <span>${order.value}</span>`,
-                style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "17px", textAlign: "left",  marginTop: '5px', display: 'flex', justifyContent: 'space-between'}
+                style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "17px", textAlign: "left",  marginTop: '5px', display: 'flex', justifyContent: 'space-between'}
             },
             {
                 type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                 value: `<b>Кол. гостей: </b> ${order.customer_quantity}`,
-                style: {marginRight: '5px',  fontFamily: 'courier', fontSize: "17px", textAlign: "left",  marginTop: '15px'}
+                style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "17px", textAlign: "left",  marginTop: '15px'}
             },
             {
                 type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                 value: `Спасибо за ваш заказ!`,
-                style: {marginRight: '5px',  fontFamily: 'courier', fontWeight: '500', fontSize: "17px", textAlign: "center",  marginTop: '10px'}
+                style: {marginRight: '5px',  fontFamily: 'PT Mono', fontWeight: '500', fontSize: "17px", textAlign: "center",  marginTop: '10px'}
             },
             {
                 type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                 value: `Приятного аппетита`,
-                style: {marginRight: '5px',  fontFamily: 'courier', fontWeight: '500', fontSize: "17px", textAlign: "center",  marginTop: '5px'}
+                style: {marginRight: '5px',  fontFamily: 'PT Mono', fontWeight: '500', fontSize: "17px", textAlign: "center",  marginTop: '5px'}
             },
         ];
     }
@@ -877,7 +871,7 @@ function handlePrint(ipcMain, defaultPrinter) {
                 {
                     type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                     value: `*`,
-                    style: {marginRight: '5px', fontFamily: 'courier', textAlign: 'right', fontSize: "64px"}
+                    style: {marginRight: '5px', fontFamily: 'PT Mono', textAlign: 'right', fontSize: "64px"}
                 },
             ]);
         }
@@ -892,32 +886,32 @@ function handlePrint(ipcMain, defaultPrinter) {
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `Филиал (${ order.branch.name })`,
-                style: {marginRight: '5px', fontFamily: 'courier', textAlign: 'center', fontSize: "15px", marginTop: order.customer.is_nozik ? '8px': '15px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', textAlign: 'center', fontSize: "15px", marginTop: order.customer.is_nozik ? '8px': '15px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `Счет № ${ order.receipt_number }`,
-                style: {marginRight: '5px', fontFamily: 'courier', textAlign: 'center', fontSize: "15px", borderBottom: '1px dashed black'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', textAlign: 'center', fontSize: "15px", borderBottom: '1px dashed black'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `Дата: ${ order.start_time.split(' ')[0] }`,
-                style: {marginRight: '5px', fontFamily: 'courier', textAlign: 'left', fontSize: "15px", marginTop: '5px' }
+                style: {marginRight: '5px', fontFamily: 'PT Mono', textAlign: 'left', fontSize: "15px", marginTop: '5px' }
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `Bремя заказа: ${ order.start_time.split(' ')[1] }`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '700', textAlign: 'left', fontSize: "15px", marginTop: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '700', textAlign: 'left', fontSize: "15px", marginTop: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `Колл-центр: ${ order.employee.registration_number }`,
-                style: {marginRight: '5px', fontFamily: 'courier', textAlign: 'left', fontSize: "15px", marginTop: '5px', borderBottom: '1px dashed black', paddingBottom: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', textAlign: 'left', fontSize: "15px", marginTop: '5px', borderBottom: '1px dashed black', paddingBottom: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `<b>Тип заказа:</b> ${ order.orderType.name }`,
-                style: {marginRight: '5px', fontFamily: 'courier', textAlign: 'center', fontSize: "15px", marginTop: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', textAlign: 'center', fontSize: "15px", marginTop: '5px'}
             },
         ];
     }
@@ -987,7 +981,7 @@ function handlePrint(ipcMain, defaultPrinter) {
             orderItems.push({
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `${orderItem}`,
-                style: {marginRight: '5px', fontFamily: 'courier', textAlign: 'center', fontSize: "17px", display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderBottom: '1px dashed black'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', textAlign: 'center', fontSize: "17px", display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderBottom: '1px dashed black'}
             });          
         })
         return orderItems;
@@ -1000,7 +994,7 @@ function handlePrint(ipcMain, defaultPrinter) {
                 {
                     type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                     value: `<span><b>${ transaction.paymentType.name }</b></span><span>${transaction.type === 'deposit' ? '' : transaction.type === 'withdraw' ? '-' : ''} ${transaction.amount}</span>`,
-                    style: {marginRight: '5px', fontFamily: 'courier', textAlign: 'center', fontSize: "15px", borderBottom: '1px dashed black', display: 'flex', justifyContent: 'space-between'}
+                    style: {marginRight: '5px', fontFamily: 'PT Mono', textAlign: 'center', fontSize: "15px", borderBottom: '1px dashed black', display: 'flex', justifyContent: 'space-between'}
                 },
             );
         });
@@ -1009,17 +1003,17 @@ function handlePrint(ipcMain, defaultPrinter) {
                 {
                     type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                     value: `<span><b>ИТОГО: </b></span><span>${ order.value }</span>`,
-                    style: {marginRight: '5px', fontFamily: 'courier', textAlign: 'center', paddingBottom: '5px', marginTop: '5px', fontSize: "15px", borderBottom: '1px dashed black', display: 'flex', justifyContent: 'space-between'}
+                    style: {marginRight: '5px', fontFamily: 'PT Mono', textAlign: 'center', paddingBottom: '5px', marginTop: '5px', fontSize: "15px", borderBottom: '1px dashed black', display: 'flex', justifyContent: 'space-between'}
                 },
                 {
                     type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                     value: `<b>Адрес:</b> ${ getCustomerAddresses(order.address) }`,
-                    style: {marginRight: '5px', fontFamily: 'courier', textAlign: 'left', fontSize: "15px"}
+                    style: {marginRight: '5px', fontFamily: 'PT Mono', textAlign: 'left', fontSize: "15px"}
                 },
                 {
                     type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                     value: `<b>Тел:</b> ${ getCustomerContacts(order.customer) }`,
-                    style: {marginRight: '5px', fontFamily: 'courier', textAlign: 'left', fontSize: "15px"}
+                    style: {marginRight: '5px', fontFamily: 'PT Mono', textAlign: 'left', fontSize: "15px"}
                 },
             ]);
         }
@@ -1028,7 +1022,7 @@ function handlePrint(ipcMain, defaultPrinter) {
                 {
                     type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                     value: `<b>Комментарии: </b>${ order.note }`,
-                    style: {marginRight: '5px', fontFamily: 'courier', textAlign: 'left', fontSize: "15px"}
+                    style: {marginRight: '5px', fontFamily: 'PT Mono', textAlign: 'left', fontSize: "15px"}
                 },
             ]);
         }
@@ -1037,7 +1031,7 @@ function handlePrint(ipcMain, defaultPrinter) {
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `<b>Кол. гостей: </b>${ order.customer_quantity }`,
-                style: {marginRight: '5px', fontFamily: 'courier', textAlign: 'left', fontSize: "15px", marginBottom: '15px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', textAlign: 'left', fontSize: "15px", marginBottom: '15px'}
             },
             {
                 type: 'image',
@@ -1049,12 +1043,12 @@ function handlePrint(ipcMain, defaultPrinter) {
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `Спасибо за ваш заказ!`,
-                style: {marginRight: '5px', fontFamily: 'courier', textAlign: 'center', fontSize: "15px", marginTop: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', textAlign: 'center', fontSize: "15px", marginTop: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `Приятного аппетита`,
-                style: {marginRight: '5px', fontFamily: 'courier', textAlign: 'center', fontSize: "15px", marginTop: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', textAlign: 'center', fontSize: "15px", marginTop: '5px'}
             },
         ]);
         return data;
@@ -1082,122 +1076,122 @@ function handlePrint(ipcMain, defaultPrinter) {
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `ИНФОРМАЦИЯ ОБ ОТЧЕТЕ`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '700', textAlign: 'center', fontSize: "20px", marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '700', textAlign: 'center', fontSize: "20px", marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `<span>Номер Z-отчёта: </span><span>${zInfo.number}</span>`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `<span>Номер ФМ: </span><span>${zInfo.terminalID}</span>`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `<span>Дата открытия: </span><span>${zInfo.openTime}</span>`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `<span>Дата закрытия: </span><span>${zInfo.closeTime}</span>`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `ЧЕКИ`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "17px", marginTop: '5px', borderBottom: '1px dotted black', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "17px", marginTop: '5px', borderBottom: '1px dotted black', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `<span>Количество чеков:</span><span>${zInfo.totalSaleCount}</span>`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `<span>Возвращённые чеки:</span><span>${zInfo.totalRefundCount}</span>`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `<span>Первый чек №: </span><span>${zInfo.firstReceiptSeq}</span>`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `<span>Последний чек №: </span><span>${zInfo.lastReceiptSeq}</span>`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `ОПЛАТЫ`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "17px", marginTop: '5px', borderBottom: '1px dotted black', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "17px", marginTop: '5px', borderBottom: '1px dotted black', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `<span>Общ. сумма нал.:</span><span>${pipes.TaxPricePipe(zInfo.totalSaleCash)}</span>`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `<span>Общ. сумма карта: </span><span>${pipes.TaxPricePipe(zInfo.totalSaleCard)}</span>`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "17px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "17px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `<span>Общ. сумма:  </span><span>${pipes.TaxPricePipe(zInfo.totalSaleCash + zInfo.totalSaleCard)}</span>`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `<span>Общ. Сумма НДС:</span><span>${pipes.TaxPricePipe(zInfo.totalSaleVAT)}</span>`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `ВОЗВРАТЫ`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "17px", marginTop: '5px', borderBottom: '1px dotted black', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "17px", marginTop: '5px', borderBottom: '1px dotted black', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `<span>Общ. сумма нал.:</span><span>${pipes.TaxPricePipe(zInfo.totalRefundCash)}</span>`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `<span>Общ. сумма карта:</span><span>${pipes.TaxPricePipe(zInfo.totalRefundCard)}</span>`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `<span>Общ. сумма:  </span><span>${pipes.TaxPricePipe(zInfo.totalRefundCash + zInfo.totalRefundCard)}</span>`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `<span>Общ. Сумма НДС:</span><span>${pipes.TaxPricePipe(zInfo.totalRefundVAT)}</span>`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `ИТОГО`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "17px", marginTop: '5px', borderBottom: '1px dotted black', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "17px", marginTop: '5px', borderBottom: '1px dotted black', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `<span>Общ. сумма нал.:</span><span>${pipes.TaxPricePipe(zInfo.totalSaleCash)}</span>`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `<span>Общ. сумма карта:</span><span>${pipes.TaxPricePipe(zInfo.totalSaleCard)}</span>`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', marginRight: '5px'}
             },
             {
                 type: 'text',                                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table
                 value: `<span>Общ. Сумма НДС:</span><span>${pipes.TaxPricePipe(zInfo.totalSaleVAT)}</span>`,
-                style: {marginRight: '5px', fontFamily: 'courier', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', borderBottom: '1px dotted black', marginRight: '5px'}
+                style: {marginRight: '5px', fontFamily: 'PT Mono', fontWeight: '500', textAlign: 'center', fontSize: "14px", display: 'flex', justifyContent: 'space-between', borderBottom: '1px dotted black', marginRight: '5px'}
             },
         ];
     }
