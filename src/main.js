@@ -20,7 +20,10 @@ try {
 } catch (error) {
 
 }
-
+let isSingleInstance = app.requestSingleInstanceLock()
+if (!isSingleInstance) {
+  app.quit()
+}
 function createWindow () {
     /** @type {Electron.Display[]} */
     const displays = electron?.screen.getAllDisplays();
@@ -62,6 +65,13 @@ app.on('ready', () => {
 app.on('window-all-closed', function () {
     app.quit()
 })
+
+app.on('second-instance', (event, argv, cwd) => {
+    if (window) {
+      if (window.isMinimized()) window.restore()
+      window.focus()
+    }
+  })
 
 app.on('activate', function () {
     if (mainWindow === null) createWindow()
