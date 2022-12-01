@@ -1,6 +1,6 @@
 {
   "name": "sieves-electron",
-  "version": "1.0.03",
+  "version": "1.0.4",
   "description": "electron version sievesapp",
   "main": "src/main.js",
   "scripts": {

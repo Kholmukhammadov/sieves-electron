@@ -844,6 +844,11 @@ function handlePrint(ipcMain, defaultPrinter) {
             },
             {
                 type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
+                value: `<b>Комментарии:</b> ${order.note && order.note.length > 0 ? order.note.split(',')[0] : 'no comment'}`,
+                style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "17px", textAlign: "left",  marginTop: '15px'}
+            },
+            {
+                type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
                 value: `<b>Кол. гостей: </b> ${order.customer_quantity}`,
                 style: {marginRight: '5px',  fontFamily: 'PT Mono', fontSize: "17px", textAlign: "left",  marginTop: '15px'}
             },
