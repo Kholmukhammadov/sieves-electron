@@ -543,7 +543,7 @@ function handlePrint(ipcMain, defaultPrinter) {
             },
         ]);
 
-        if (order.order_type_id >= 7 && order.note.length > 0) {
+        if (order.order_type_id >= 7 && order.note?.length > 0) {
             data.push(...[
                 {
                     type: 'text',                       // 'text' | 'barCode' | 'qrCode' | 'image' | 'table'
