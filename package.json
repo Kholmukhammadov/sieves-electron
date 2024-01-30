@@ -1,6 +1,6 @@
 {
   "name": "sieves-electron",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "electron version sievesapp",
   "main": "src/main.js",
   "scripts": {
@@ -19,6 +19,7 @@
     "electron-squirrel-startup": "^1.0.0",
     "node-notifier": "^10.0.0",
     "node-powershell": "^4.0.0",
+    "serialport": "^10.5.0",
     "update-electron-app": "^2.0.1"
   },
   "devDependencies": {
